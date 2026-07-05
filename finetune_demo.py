@@ -1,4 +1,4 @@
-"""Minimal fine-tuning demo for WAFT (waft-a2 / dav2 backbone).
+"""Minimal fine-tuning demo for BuildFlowMatch (waft-a2 / dav2 backbone).
 
 Loads a pretrained checkpoint, fine-tunes it for a handful of steps on a
 small custom dataset (image1/image2/flow folders, see dataloader/custom.py),

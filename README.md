@@ -1,7 +1,7 @@
-# WAFT Colab Demo (waft-a2, backbone dav2)
+# BuildFlowMatch (waft-a2, backbone dav2)
 
 Repo minimal, extras din [WAFT](.) doar cu ce e nevoie ca modelul `waft-a2`
-(dav2 backbone, `BuildMatchFlow`) sa functioneze: incarcare checkpoint,
+(dav2 backbone, `BuildFlowMatch`) sa functioneze: incarcare checkpoint,
 un pas (sau mai multi) de fine-tuning pe un set de date propriu (poze + gt),
 si inferenta/vizualizare inainte-dupa.
 
@@ -23,7 +23,7 @@ depth-anything-ckpts/           - pui aici greutatile encoder-ului dav2
 
 Modelul are nevoie de doua seturi de greutati:
 
-1. **Checkpoint WAFT** (waft-a2, dav2) — descarca-l din Google Drive-ul
+1. **Checkpoint BuildFlowMatch** (waft-a2, dav2) — descarca-l din Google Drive-ul
    proiectului original si pune-l in `checkpoints/sintel-gm-final.pth`
    (sau alt nume, il dai ca `--ckpt` la script).
 2. **Encoder dav2 (Depth Anything V2, vits)** — fisierul
