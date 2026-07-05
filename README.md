@@ -14,7 +14,11 @@ thirdparty/DepthAnythingV2/     - encoder-ul dav2 (vendored, fara submodule)
 dataloader/custom.py            - dataset generic pentru poze+gt proprii
 criterion/loss.py               - loss-ul folosit la antrenare
 finetune_demo.py                - scriptul de fine-tuning + preview
-colab_finetune_demo.ipynb       - notebook-ul de rulat in Colab
+colab_finetune_demo.ipynb       - notebook Colab, cu upload de dataset propriu
+colab_finetune_demo_minimal.ipynb - notebook Colab minimal: doar checkpoint,
+                                   restul (date exemplu, 1 pas, inferenta) e inclus
+sample_data/                    - pereche de imagini exemplu + flux optic cunoscut,
+                                   folosita de notebook-ul minimal
 checkpoints/                    - pui aici checkpoint-ul de pornire (.pth)
 depth-anything-ckpts/           - pui aici greutatile encoder-ului dav2
 ```
@@ -53,18 +57,28 @@ data/custom/
 
 ## 3. Rulare
 
-Vezi `colab_finetune_demo.ipynb` pentru pasii completi in Colab
-(clone, install, upload checkpoint + dataset, rulare). Local, echivalentul e:
+Doua variante de notebook Colab:
+
+- `colab_finetune_demo_minimal.ipynb` — cel mai simplu: incarci doar checkpoint-ul,
+  restul (o pereche de imagini exemplu din `sample_data/`, 1 pas de fine-tuning,
+  inferenta inainte/dupa) e deja inclus in repo.
+- `colab_finetune_demo.ipynb` — varianta completa, cu upload al propriului
+  set de date (vezi sectiunea 2 mai sus) si numar configurabil de pasi.
+
+Local, echivalentul rularii minimale e:
 
 ```bash
 pip install -r requirements.txt
 python finetune_demo.py \
     --cfg config/a2/dav2/sintel-gm.json \
     --ckpt checkpoints/sintel-gm-final.pth \
-    --data_dir data/custom \
-    --steps 100 \
+    --data_dir sample_data \
+    --steps 1 \
     --out_ckpt checkpoints/finetuned.pth
 ```
+
+(pentru setul tau de date, inlocuieste `--data_dir sample_data` cu `--data_dir data/custom`
+si `--steps 1` cu numarul de pasi dorit).
 
 Scriptul salveaza `demo_out/flow_before.jpg` si `demo_out/flow_after.jpg`
 (vizualizarea fluxului optic pe prima pereche din setul tau, inainte si
