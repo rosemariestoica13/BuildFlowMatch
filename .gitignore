@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+checkpoints/*.pth
+depth-anything-ckpts/*.pth
+data/
+demo_out/
+.ipynb_checkpoints/
