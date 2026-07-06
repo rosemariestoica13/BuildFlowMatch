@@ -21,8 +21,10 @@ class CustomFlowDataset(FlowDataset):
       from image1[i] to image2[i].
     - Files are matched by sorted order, so keep filenames aligned across the
       three folders (same basenames recommended, extensions can differ).
-    - Ground truth must be a `.flo` file (Middlebury format, see
-      utils/frame_utils.py:writeFlow / readFlow).
+    - Ground truth is either a `.flo` file (Middlebury format, see
+      utils/frame_utils.py:writeFlow / readFlow) or a `.png` file in KITTI's
+      16-bit encoding (see utils/frame_utils.py:readFlowKITTI), e.g. the
+      flow_occ/flow_noc folders from the KITTI scene flow devkit.
     """
 
     def __init__(self, aug_params=None, root='data/custom'):
@@ -44,6 +46,9 @@ class CustomFlowDataset(FlowDataset):
         self.flow_list += flows
 
     def read_flow(self, index):
-        flow = frame_utils.read_gen(self.flow_list[index])
+        path = self.flow_list[index]
+        if path.endswith('.png'):
+            return frame_utils.readFlowKITTI(path)
+        flow = frame_utils.read_gen(path)
         valid = (np.abs(flow[..., 0]) < 1000) & (np.abs(flow[..., 1]) < 1000)
         return flow, valid
