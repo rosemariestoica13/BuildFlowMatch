@@ -46,7 +46,7 @@ def build_loader(args, data_dir):
 
 
 @torch.no_grad()
-def save_flow_preview(model, dataset, out_path, device):
+def save_flow_preview(model, dataset, out_path, device, print_epe=True):
     image1, image2, flow_gt, valid = dataset[0]
     image1 = image1[None].to(device)
     image2 = image2[None].to(device)
@@ -54,9 +54,10 @@ def save_flow_preview(model, dataset, out_path, device):
     flow = output['flow'][-1]
     flow_vis = flow_to_image(flow[0].permute(1, 2, 0).cpu().numpy(), convert_to_bgr=True)
     cv2.imwrite(out_path, flow_vis)
-    epe = ((flow[0] - flow_gt.to(device)) ** 2).sum(0).sqrt()
-    epe = (epe * valid.to(device)).sum() / valid.to(device).sum().clamp(min=1)
-    print(f"[{out_path}] EPE vs ground truth: {epe.item():.3f}")
+    if print_epe:
+        epe = ((flow[0] - flow_gt.to(device)) ** 2).sum(0).sqrt()
+        epe = (epe * valid.to(device)).sum() / valid.to(device).sum().clamp(min=1)
+        print(f"[{out_path}] EPE vs ground truth: {epe.item():.3f}")
 
 
 def main():
@@ -118,7 +119,7 @@ def main():
     # --- preview after fine-tuning ---
     model.eval()
     wrapped = InferenceWrapper(model)
-    save_flow_preview(wrapped, dataset, os.path.join(args.preview_dir, 'flow_after.jpg'), device)
+    save_flow_preview(wrapped, dataset, os.path.join(args.preview_dir, 'flow_after.jpg'), device, print_epe=False)
 
 
 if __name__ == '__main__':
