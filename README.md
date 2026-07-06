@@ -14,11 +14,9 @@ thirdparty/DepthAnythingV2/     - encoder-ul dav2 (vendored, fara submodule)
 dataloader/custom.py            - dataset generic pentru poze+gt proprii
 criterion/loss.py               - loss-ul folosit la antrenare
 finetune_demo.py                - scriptul de fine-tuning + preview
-colab_finetune_demo.ipynb       - notebook Colab, cu upload de dataset propriu
-colab_finetune_demo_minimal.ipynb - notebook Colab minimal: doar checkpoint,
-                                   restul (date exemplu, 1 pas, inferenta) e inclus
-sample_data/                    - pereche de imagini exemplu + flux optic cunoscut,
-                                   folosita de notebook-ul minimal
+infer_demo.py                   - inferenta pe o pereche de imagini, fara ground truth
+colab_demo.ipynb                - notebook Colab: checkpoint + dataset din Google Drive,
+                                   fine-tuning si inferenta
 checkpoints/                    - pui aici checkpoint-ul de pornire (.pth)
 depth-anything-ckpts/           - pui aici greutatile encoder-ului dav2
 ```
@@ -57,29 +55,32 @@ data/custom/
 
 ## 3. Rulare
 
-Doua variante de notebook Colab:
-
-- `colab_finetune_demo_minimal.ipynb` — cel mai simplu: incarci doar checkpoint-ul,
-  restul (o pereche de imagini exemplu din `sample_data/`, 1 pas de fine-tuning,
-  inferenta inainte/dupa) e deja inclus in repo.
-- `colab_finetune_demo.ipynb` — varianta completa, cu upload al propriului
-  set de date (vezi sectiunea 2 mai sus) si numar configurabil de pasi.
-
-Local, echivalentul rularii minimale e:
+Vezi `colab_demo.ipynb` pentru pasii completi in Colab: clone, install,
+checkpoint + dataset descarcate automat din Google Drive, fine-tuning si
+inferenta. Local, echivalentul e:
 
 ```bash
 pip install -r requirements.txt
 python finetune_demo.py \
     --cfg config/a2/dav2/sintel-gm.json \
     --ckpt checkpoints/sintel-gm-final.pth \
-    --data_dir sample_data \
-    --steps 1 \
+    --data_dir data/custom \
+    --steps 100 \
     --out_ckpt checkpoints/finetuned.pth
 ```
-
-(pentru setul tau de date, inlocuieste `--data_dir sample_data` cu `--data_dir data/custom`
-si `--steps 1` cu numarul de pasi dorit).
 
 Scriptul salveaza `demo_out/flow_before.jpg` si `demo_out/flow_after.jpg`
 (vizualizarea fluxului optic pe prima pereche din setul tau, inainte si
 dupa fine-tuning) si checkpoint-ul fine-tuned in `--out_ckpt`.
+
+Pentru inferenta pe o pereche de imagini fara ground truth (ex. cu
+checkpoint-ul fine-tuned):
+
+```bash
+python infer_demo.py \
+    --cfg config/a2/dav2/sintel-gm.json \
+    --ckpt checkpoints/finetuned.pth \
+    --img1 infer_data/000008_10.png \
+    --img2 infer_data/000008_11.png \
+    --out demo_out/infer_flow.jpg
+```
